@@ -236,6 +236,16 @@ class RelToSqlConverterTest {
         .withInformix().ok(expectedInformix);
   }
 
+  @Test void testGroupByStringLiteral() {
+    String query = "select \"gender\", listagg(distinct \"last_name\", ', ') from \"employee\" group by \"gender\"";
+    String expected = "SELECT \"gender\", LISTAGG(DISTINCT \"last_name\", ', ')\n"
+        + "FROM \"foodmart\".\"employee\"\n"
+        + "GROUP BY \"gender\"";
+    sql(query)
+        .withPostgresql().ok(expected)
+        .withMssql().ok(expected);
+  }
+
   @Test void testGroupByDateLiteral() {
     String query = "select avg(\"salary\") from \"employee\" group by DATE '2022-01-01'";
     String expectedRedshift = "SELECT AVG(\"employee\".\"salary\")\n"
