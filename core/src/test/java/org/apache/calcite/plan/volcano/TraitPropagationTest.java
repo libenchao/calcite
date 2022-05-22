@@ -72,6 +72,7 @@ import org.apache.calcite.tools.RuleSets;
 import org.apache.calcite.util.ImmutableBitSet;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.immutables.value.Value;
@@ -164,7 +165,8 @@ class TraitPropagationTest {
               (RexNode) rexBuilder.makeInputRef(stringType, 0),
               rexBuilder.makeInputRef(integerType, 1)),
           typeFactory.builder().add("s", stringType).add("i", integerType)
-          .build());
+              .build(),
+          ImmutableSet.of());
 
       // aggregate on s, count
       AggregateCall aggCall = AggregateCall.create(SqlStdOperatorTable.COUNT,

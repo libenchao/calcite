@@ -11760,7 +11760,7 @@ LogicalProject(EXPR$0=[> SOME($0, {
 LogicalProject(DEPTNO=[$0])
   LogicalFilter(condition=[=($cor0.JOB, $1)])
     LogicalTableScan(table=[[CATALOG, SALES, DEPT]])
-})])
+})], variablesSet=[[$cor0]])
   LogicalTableScan(table=[[CATALOG, SALES, EMP]])
 ]]>
     </Resource>
@@ -11802,7 +11802,7 @@ LogicalProject(SAL=[$5], EXPR$1=[NOT(IN($0, {
 LogicalProject(DEPTNO=[$0])
   LogicalFilter(condition=[=($cor0.JOB, $1)])
     LogicalTableScan(table=[[CATALOG, SALES, DEPT]])
-}))])
+}))], variablesSet=[[$cor0]])
   LogicalTableScan(table=[[CATALOG, SALES, EMP]])
 ]]>
     </Resource>

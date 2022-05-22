@@ -45,6 +45,7 @@ import org.apache.calcite.tools.RelBuilder;
 import org.apache.calcite.util.Util;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 import org.immutables.value.Value;
 
@@ -86,7 +87,8 @@ public class StreamRules {
           LogicalProject.create(newDelta,
               project.getHints(),
               project.getProjects(),
-              project.getRowType().getFieldNames());
+              project.getRowType().getFieldNames(),
+              ImmutableSet.of());
       call.transformTo(newProject);
     }
 

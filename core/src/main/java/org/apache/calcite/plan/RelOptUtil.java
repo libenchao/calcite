@@ -905,11 +905,11 @@ public abstract class RelOptUtil {
     if (rename) {
       // Use names and types from castRowType.
       return projectFactory.createProject(input, hints, castExps,
-          castRowType.getFieldNames());
+          castRowType.getFieldNames(), ImmutableSet.of());
     } else {
       // Use names from rowType, types from castRowType.
       return projectFactory.createProject(input, hints, castExps,
-          rowType.getFieldNames());
+          rowType.getFieldNames(), ImmutableSet.of());
     }
   }
 
@@ -3619,7 +3619,8 @@ public abstract class RelOptUtil {
               : fieldNames.get(i));
       exprList.add(rexBuilder.makeInputRef(rel, source));
     }
-    return projectFactory.createProject(rel, ImmutableList.of(), exprList, outputNameList);
+    return projectFactory.createProject(rel, ImmutableList.of(), exprList, outputNameList,
+        ImmutableSet.of());
   }
 
   /** Predicate for if a {@link Calc} does not contain windowed aggregates. */

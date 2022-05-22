@@ -3462,4 +3462,9 @@ where NOT EXISTS (select count(*) from emp e having false);
 EnumerableTableScan(table=[[scott, DEPT]])
 !plan
 
+!use bookstore
+SELECT array(SELECT lau."books")
+FROM "bookstore"."authors" au
+LEFT JOIN "bookstore"."authors" lau ON (lau."name" = au."name");
+
 # End sub-query.iq
