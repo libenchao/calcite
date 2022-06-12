@@ -4397,8 +4397,12 @@ public class SqlToRelConverter {
     final RelNode r;
     final CorrelationUse p = getCorrelationUse(bb, project);
     if (p != null) {
+      assert p.r instanceof Project;
+      // correlation variables have been normalized in p.r, we should use expressions
+      // in p.r instead of the original exprs
+      Project project1 = (Project) p.r;
       r = relBuilder.push(bb.root())
-          .projectNamed(exprs, fieldNames, true, ImmutableSet.of(p.id))
+          .projectNamed(project1.getProjects(), fieldNames, true, ImmutableSet.of(p.id))
           .build();
     } else {
       r = project;

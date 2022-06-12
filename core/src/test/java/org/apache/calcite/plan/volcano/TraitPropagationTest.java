@@ -372,7 +372,7 @@ class TraitPropagationTest {
   private static class PhysProj extends Project implements Phys {
     PhysProj(RelOptCluster cluster, RelTraitSet traits, RelNode child,
         List<RexNode> exps, RelDataType rowType) {
-      super(cluster, traits, ImmutableList.of(), child, exps, rowType);
+      super(cluster, traits, ImmutableList.of(), child, exps, rowType, ImmutableSet.of());
     }
 
     public static PhysProj create(final RelNode input,

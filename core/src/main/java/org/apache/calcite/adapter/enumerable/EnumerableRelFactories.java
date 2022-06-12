@@ -27,7 +27,6 @@ import org.apache.calcite.rex.RexUtil;
 import org.apache.calcite.sql.validate.SqlValidatorUtil;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSet;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -72,7 +71,7 @@ public class EnumerableRelFactories {
     @Override public RelNode createProject(RelNode input, List<RelHint> hints,
         List<? extends RexNode> childExprs,
         @Nullable List<? extends @Nullable String> fieldNames,
-        ImmutableSet<CorrelationId> variablesSet) {
+        Set<CorrelationId> variablesSet) {
       Preconditions.checkArgument(variablesSet.isEmpty(),
           "EnumerableProject does not allow variables");
       final RelDataType rowType =

@@ -667,7 +667,7 @@ LogicalProject(EMPNO=[$0], JOB=[$2])
   <TestCase name="testCorrelatedScalarSubQueryInSelectList">
     <Resource name="planNotExpanded">
       <![CDATA[
-LogicalProject(DEPTNO=[$0], I0=[$SCALAR_QUERY({
+LogicalProject(variablesSet=[[$cor0]], DEPTNO=[$0], I0=[$SCALAR_QUERY({
 LogicalAggregate(group=[{}], EXPR$0=[MIN($0)])
   LogicalProject($f0=[1])
     LogicalFilter(condition=[>($0, $cor0.DEPTNO)])
@@ -787,10 +787,10 @@ LogicalProject(DEPTNO=[$7], EXPR$1=[$9])
     </Resource>
     <Resource name="planNotExpanded">
       <![CDATA[
-LogicalProject(DEPTNO=[$7], EXPR$1=[$SCALAR_QUERY({
+LogicalProject(variablesSet=[[$cor0]], DEPTNO=[$7], EXPR$1=[$SCALAR_QUERY({
 LogicalProject(NAME=[$0])
   LogicalTableFunctionScan(invocation=[DEDUP($cor0.DEPTNO, $cor0.DEPTNO)], rowType=[RecordType(VARCHAR(1024) NAME)])
-})], variablesSet=[[$cor0]])
+})])
   LogicalTableScan(table=[[CATALOG, SALES, EMP]])
 ]]>
     </Resource>
@@ -905,10 +905,10 @@ where exists (select * from emp
     </Resource>
     <Resource name="plan">
       <![CDATA[
-LogicalProject(EXPR$0=[ARRAY({
+LogicalProject(variablesSet=[[$cor0]], EXPR$0=[ARRAY({
 LogicalProject(DEPTNO=[$cor0.DEPTNO])
   LogicalValues(tuples=[[{ 0 }]])
-})], variablesSet=[[$cor0]])
+})])
   LogicalTableScan(table=[[CATALOG, SALES, EMP]])
 ]]>
     </Resource>
@@ -920,10 +920,10 @@ from (select deptno, ename from emp) e]]>
     </Resource>
     <Resource name="plan">
       <![CDATA[
-LogicalProject(EXPR$0=[ARRAY({
+LogicalProject(variablesSet=[[$cor0]], EXPR$0=[ARRAY({
 LogicalProject(DEPTNO=[$cor0.DEPTNO])
   LogicalValues(tuples=[[{ 0 }]])
-})], variablesSet=[[$cor0]])
+})])
   LogicalProject(DEPTNO=[$7], ENAME=[$1])
     LogicalTableScan(table=[[CATALOG, SALES, EMP]])
 ]]>
@@ -936,13 +936,13 @@ from (select deptno, ename from emp) e]]>
     </Resource>
     <Resource name="plan">
       <![CDATA[
-LogicalProject(EXPR$0=[CARDINALITY(ARRAY({
+LogicalProject(variablesSet=[[$cor0]], EXPR$0=[CARDINALITY(ARRAY({
 LogicalProject(DEPTNO=[$cor0.DEPTNO])
   LogicalValues(tuples=[[{ 0 }]])
 }))], EXPR$1=[ITEM(ARRAY({
-LogicalProject(ENAME=[$cor1.ENAME])
+LogicalProject(ENAME=[$cor0.ENAME])
   LogicalValues(tuples=[[{ 0 }]])
-}), 0)], variablesSet=[[$cor0]])
+}), 0)])
   LogicalProject(DEPTNO=[$7], ENAME=[$1])
     LogicalTableScan(table=[[CATALOG, SALES, EMP]])
 ]]>
@@ -956,10 +956,10 @@ from (select deptno, ename from emp) e)]]>
     </Resource>
     <Resource name="plan">
       <![CDATA[
-LogicalProject(EXPR$0=[CARDINALITY(ARRAY({
+LogicalProject(variablesSet=[[$cor0]], EXPR$0=[CARDINALITY(ARRAY({
 LogicalProject(DEPTNO=[$cor0.DEPTNO])
   LogicalValues(tuples=[[{ 0 }]])
-}))], variablesSet=[[$cor0]])
+}))])
   LogicalProject(DEPTNO=[$7], ENAME=[$1])
     LogicalTableScan(table=[[CATALOG, SALES, EMP]])
 ]]>
