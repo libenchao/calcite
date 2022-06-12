@@ -122,7 +122,7 @@ public final class LogicalProject extends Project {
 
   /**
    * Creates a LogicalProject.
-   * @deprecated Use {@link #create(RelNode, List, List, List, ImmutableSet)} instead
+   * @deprecated Use {@link #create(RelNode, List, List, List, Set)} instead
    */
   @Deprecated // to be removed before 2.0
   public static LogicalProject create(final RelNode input, List<RelHint> hints,
