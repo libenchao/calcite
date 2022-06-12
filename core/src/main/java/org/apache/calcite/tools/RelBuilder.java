@@ -1833,7 +1833,7 @@ public class RelBuilder {
    */
   public RelBuilder project(Iterable<? extends RexNode> nodes,
       Iterable<? extends @Nullable String> fieldNames, boolean force,
-      ImmutableSet<CorrelationId> variablesSet) {
+      Iterable<CorrelationId> variablesSet) {
     return project_(nodes, fieldNames, ImmutableList.of(), force, variablesSet);
   }
 
@@ -1909,10 +1909,11 @@ public class RelBuilder {
       Iterable<? extends @Nullable String> fieldNames,
       Iterable<RelHint> hints,
       boolean force,
-      ImmutableSet<CorrelationId> variablesSet) {
+      Iterable<CorrelationId> variablesSet) {
     final Frame frame = requireNonNull(peek_(), "frame stack is empty");
     final RelDataType inputRowType = frame.rel.getRowType();
     final List<RexNode> nodeList = Lists.newArrayList(nodes);
+    final Set<CorrelationId> variables = ImmutableSet.copyOf(variablesSet);
 
     // Perform a quick check for identity. We'll do a deeper check
     // later when we've derived column names.
@@ -1930,7 +1931,7 @@ public class RelBuilder {
     bloat:
     if (frame.rel instanceof Project
         && config.bloat() >= 0
-        && variablesSet.isEmpty()) {
+        && variables.isEmpty()) {
       final Project project = (Project) frame.rel;
       // Populate field names. If the upper expression is an input ref and does
       // not have a recommended name, use the name of the underlying field.
@@ -2066,7 +2067,7 @@ public class RelBuilder {
             ImmutableList.copyOf(hints),
             ImmutableList.copyOf(nodeList),
             fieldNameList,
-            variablesSet);
+            variables);
     stack.pop();
     stack.push(new Frame(project, fields.build()));
     return this;
@@ -2116,7 +2117,7 @@ public class RelBuilder {
    */
   public RelBuilder projectNamed(Iterable<? extends RexNode> nodes,
       @Nullable Iterable<? extends @Nullable String> fieldNames, boolean force,
-      ImmutableSet<CorrelationId> variablesSet) {
+      Iterable<CorrelationId> variablesSet) {
     @SuppressWarnings("unchecked") final List<? extends RexNode> nodeList =
         nodes instanceof List ? (List) nodes : ImmutableList.copyOf(nodes);
     final List<@Nullable String> fieldNameList =
