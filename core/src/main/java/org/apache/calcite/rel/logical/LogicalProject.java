@@ -24,7 +24,6 @@ import org.apache.calcite.rel.RelCollations;
 import org.apache.calcite.rel.RelInput;
 import org.apache.calcite.rel.RelNode;
 import org.apache.calcite.rel.RelShuttle;
-import org.apache.calcite.rel.RelWriter;
 import org.apache.calcite.rel.core.CorrelationId;
 import org.apache.calcite.rel.core.Project;
 import org.apache.calcite.rel.hint.RelHint;
@@ -42,7 +41,7 @@ import com.google.common.collect.ImmutableSet;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.Set;
 
 /**
  * Sub-class of {@link org.apache.calcite.rel.core.Project} not
@@ -50,8 +49,6 @@ import java.util.Objects;
  */
 public final class LogicalProject extends Project {
   //~ Constructors -----------------------------------------------------------
-
-  private final ImmutableSet<CorrelationId> variablesSet;
 
   /**
    * Creates a LogicalProject.
@@ -74,10 +71,9 @@ public final class LogicalProject extends Project {
       RelNode input,
       List<? extends RexNode> projects,
       RelDataType rowType,
-      ImmutableSet<CorrelationId> variablesSet) {
-    super(cluster, traitSet, hints, input, projects, rowType);
+      Set<CorrelationId> variablesSet) {
+    super(cluster, traitSet, hints, input, projects, rowType, variablesSet);
     assert traitSet.containsIfApplicable(Convention.NONE);
-    this.variablesSet = Objects.requireNonNull(variablesSet, "variablesSet");
   }
 
   @Deprecated // to be removed before 2.0
@@ -120,7 +116,6 @@ public final class LogicalProject extends Project {
    */
   public LogicalProject(RelInput input) {
     super(input);
-    this.variablesSet = ImmutableSet.of();
   }
 
   //~ Methods ----------------------------------------------------------------
@@ -140,7 +135,7 @@ public final class LogicalProject extends Project {
   public static LogicalProject create(final RelNode input, List<RelHint> hints,
       final List<? extends RexNode> projects,
       @Nullable List<? extends @Nullable String> fieldNames,
-      final ImmutableSet<CorrelationId> variablesSet) {
+      final Set<CorrelationId> variablesSet) {
     final RelOptCluster cluster = input.getCluster();
     final RelDataType rowType =
         RexUtil.createStructType(cluster.getTypeFactory(), projects,
@@ -150,7 +145,7 @@ public final class LogicalProject extends Project {
 
   /**
    * Creates a LogicalProject, specifying row type rather than field names.
-   * @deprecated Use {@link #create(RelNode, List, List, RelDataType, ImmutableSet)} instead
+   * @deprecated Use {@link #create(RelNode, List, List, RelDataType, Set)} instead
    */
   @Deprecated // to be removed before 2.0
   public static LogicalProject create(final RelNode input, List<RelHint> hints,
@@ -161,7 +156,7 @@ public final class LogicalProject extends Project {
   /** Creates a LogicalProject, specifying row type rather than field names. */
   public static LogicalProject create(final RelNode input, List<RelHint> hints,
       final List<? extends RexNode> projects, RelDataType rowType,
-      final ImmutableSet<CorrelationId> variablesSet) {
+      final Set<CorrelationId> variablesSet) {
     final RelOptCluster cluster = input.getCluster();
     final RelMetadataQuery mq = cluster.getMetadataQuery();
     final RelTraitSet traitSet =
@@ -169,15 +164,6 @@ public final class LogicalProject extends Project {
             .replaceIfs(RelCollationTraitDef.INSTANCE,
                 () -> RelMdCollation.project(mq, input, projects));
     return new LogicalProject(cluster, traitSet, hints, input, projects, rowType, variablesSet);
-  }
-
-  @Override public ImmutableSet<CorrelationId> getVariablesSet() {
-    return variablesSet;
-  }
-
-  @Override public RelWriter explainTerms(RelWriter pw) {
-    return super.explainTerms(pw)
-        .itemIf("variablesSet", variablesSet, !variablesSet.isEmpty());
   }
 
   @Override public LogicalProject copy(RelTraitSet traitSet, RelNode input,
