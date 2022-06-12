@@ -163,7 +163,7 @@ public class RelFactories {
      * @param childExprs The projection expressions
      * @param fieldNames The projection field names
      * @return a project
-     * @deprecated Use {@link #createProject(RelNode, List, List, List, ImmutableSet)} instead
+     * @deprecated Use {@link #createProject(RelNode, List, List, List, Set)} instead
      */
     @Deprecated // to be removed before 2.0
     default RelNode createProject(RelNode input, List<RelHint> hints,
@@ -185,7 +185,7 @@ public class RelFactories {
      */
     RelNode createProject(RelNode input, List<RelHint> hints,
         List<? extends RexNode> childExprs, @Nullable List<? extends @Nullable String> fieldNames,
-        ImmutableSet<CorrelationId> variablesSet);
+        Set<CorrelationId> variablesSet);
   }
 
   /**
@@ -195,7 +195,7 @@ public class RelFactories {
   private static class ProjectFactoryImpl implements ProjectFactory {
     @Override public RelNode createProject(RelNode input, List<RelHint> hints,
         List<? extends RexNode> childExprs, @Nullable List<? extends @Nullable String> fieldNames,
-        ImmutableSet<CorrelationId> variablesSet) {
+        Set<CorrelationId> variablesSet) {
       return LogicalProject.create(input, hints, childExprs, fieldNames, variablesSet);
     }
   }
