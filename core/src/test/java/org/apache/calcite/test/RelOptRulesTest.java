@@ -5425,6 +5425,21 @@ class RelOptRulesTest extends RelOptTestBase {
         .check();
   }
 
+  @Test void testAggregateRemove8() {
+    final String sql = ""
+        + "select mgr, sum(sum_sal)\n"
+        + "from\n"
+        + "(select mgr, sum(sal) sum_sal\n"
+        + " from sales.emp\n"
+        + " group by mgr\n"
+        + " order by sum_sal\n"
+        + " limit 100)\n"
+        + "group by mgr";
+    sql(sql)
+        .withRule(CoreRules.AGGREGATE_REMOVE)
+        .check();
+  }
+
   /** Test case for
    * <a href="https://issues.apache.org/jira/browse/CALCITE-2712">[CALCITE-2712]
    * Should remove the left join since the aggregate has no call and
