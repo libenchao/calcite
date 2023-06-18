@@ -94,6 +94,7 @@ import org.apache.calcite.rel.type.RelDataTypeFactory;
 import org.apache.calcite.rel.type.RelDataTypeSystemImpl;
 import org.apache.calcite.rex.RexBuilder;
 import org.apache.calcite.rex.RexCall;
+import org.apache.calcite.rex.RexCorrelVariable;
 import org.apache.calcite.rex.RexExecutorImpl;
 import org.apache.calcite.rex.RexInputRef;
 import org.apache.calcite.rex.RexLiteral;
@@ -122,6 +123,7 @@ import org.apache.calcite.tools.RelBuilder;
 import org.apache.calcite.tools.RuleSet;
 import org.apache.calcite.tools.RuleSets;
 import org.apache.calcite.util.DateString;
+import org.apache.calcite.util.Holder;
 import org.apache.calcite.util.ImmutableBitSet;
 
 import com.google.common.collect.ImmutableList;
@@ -6827,16 +6829,16 @@ class RelOptRulesTest extends RelOptTestBase {
    * failing during the decorrelation phase. The correlation variable is used at two levels
    * deep. */
   @Test void testTwoLevelDecorrelate() {
-    final String sql = "SELECT d1.name, d1.deptno + "
-        + " ( SELECT e1.empno "
-        + " FROM emp e1 "
-        + " WHERE d1.deptno = e1.deptno and "
-        + "       e1.sal = (SELECT max(sal) "
-        + "                 FROM emp e2 "
-        + "                 WHERE   e1.sal = e2.sal and"
-        + "                         e1.deptno = e2.deptno and"
-        + "                         d1.deptno < e2.deptno))"
-        + " FROM dept d1";
+    final String sql = "SELECT d1.name, d1.deptno + (\n"
+        + "SELECT e1.empno\n"
+        + "FROM emp e1\n"
+        + "WHERE d1.deptno = e1.deptno and\n"
+        + "    e1.sal = (SELECT max(sal)\n"
+        + "              FROM emp e2\n"
+        + "              WHERE e1.sal = e2.sal and\n"
+        + "                  e1.deptno = e2.deptno and\n"
+        + "                  d1.deptno < e2.deptno))\n"
+        + "FROM dept d1";
 
     sql(sql)
         .withSubQueryRules()
@@ -6845,19 +6847,48 @@ class RelOptRulesTest extends RelOptTestBase {
         .check();
   }
 
+  /**
+   * Test case that SubQueryRemoveRule works with correlated Filter without varibles.
+   */
+  @Test void testCorrelatedFilterWithoutVariable() {
+    // select *
+    // from dept
+    // where exists (select deptno
+    //               from emp
+    //               where dept.deptno = emp.deptno
+    //                 and emp.sal > 100)
+    final Holder<@Nullable RexCorrelVariable> v = Holder.empty();
+    final Function<RelBuilder, RelNode> relFn = b -> b
+        .scan("DEPT")
+        .variable(v)
+        .filter(
+            b.exists(b1 -> b1
+            .scan("EMP")
+            .filter(
+                b1.and(
+                b1.equals(b1.field(v.get(), "DEPTNO"), b1.field("DEPTNO")),
+                b1.greaterThan(b1.field("SAL"), b1.literal(100))))
+            .project(b1.field("DEPTNO"))
+            .build()))
+        .build();
+    relFn(relFn)
+        .withSubQueryRules()
+        .check();
+  }
+
   /** Test case for CALCITE-5683 for two level nested decorrelate with standard program
    * failing during the decorrelation phase. The correlation variable is used at the second
    * level and is not used in the first level */
   @Test void testCorrelatedVariableAtSecondLevel() {
-    final String sql = "SELECT d1.name, d1.deptno + "
-        + " ( SELECT e1.empno "
-        + " FROM emp e1 "
-        + " WHERE e1.sal = (SELECT max(sal) "
-        + "                 FROM emp e2 "
-        + "                 WHERE   e1.sal = e2.sal and"
-        + "                         e1.deptno = e2.deptno and"
-        + "                         d1.deptno < e2.deptno))"
-        + " FROM dept d1";
+    final String sql = "SELECT d1.name, d1.deptno +(\n"
+        + "SELECT e1.empno\n"
+        + "FROM emp e1\n"
+        + "WHERE e1.sal = (SELECT max(sal)\n"
+        + "                FROM emp e2\n"
+        + "                WHERE e1.sal = e2.sal and\n"
+        + "                    e1.deptno = e2.deptno and\n"
+        + "                    d1.deptno < e2.deptno))\n"
+        + "FROM dept d1";
     sql(sql)
         .withSubQueryRules()
         .withLateDecorrelate(true)
