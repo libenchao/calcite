@@ -2315,6 +2315,22 @@ public class DruidAdapterIT {
     // e.g., throws_("/ by zero");
   }
 
+  @Test void testForDetails() {
+    final String sqlQuery = "select \"store_state\", \"brand_name\", \"A\" "
+        + "from (\n"
+        + "  select sum(\"store_sales\")-sum(\"store_cost\") as a, \"store_state\""
+        + ", \"brand_name\"\n"
+        + "  from \"foodmart\"\n"
+        + "  group by \"store_state\", \"brand_name\" ) subq\n"
+        + "order by \"A\"";
+    CalciteAssert.AssertQuery q = sql(sqlQuery, FOODMART);
+    q.returnsOrdered("store_state=CA; brand_name=King; A=21.4632",
+        "store_state=OR; brand_name=Symphony; A=32.176",
+        "store_state=CA; brand_name=Toretti; A=32.2465",
+        "store_state=WA; brand_name=King; A=34.6104",
+        "store_state=OR; brand_name=Toretti; A=36.3");
+  }
+
   @Test void testInterleaveBetweenAggregateAndGroupOrderByOnMetrics() {
     final String sqlQuery = "select \"store_state\", \"brand_name\", \"A\" "
         + "from (\n"
