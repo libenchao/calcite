@@ -2356,6 +2356,32 @@ public class DruidAdapterIT {
         "store_state=OR; brand_name=Toretti; A=36.3,test1");
   }
 
+  @Test void testZorDetails2() {
+    final String sqlQuery = "select sum(\"store_sales\") as a0"
+        + ", sum(\"store_cost\") as a1, \"store_state\""
+        + ", \"brand_name\"\n"
+        + "  from \"foodmart\"\n"
+        + "  group by \"store_state\", \"brand_name\"";
+    CalciteAssert.AssertQuery q = sql(sqlQuery, FOODMART);
+    q.returnsOrdered("store_state=CA; brand_name=King; A=21.4632",
+        "store_state=OR; brand_name=Symphony; A=32.176",
+        "store_state=CA; brand_name=Toretti; A=32.2465",
+        "store_state=WA; brand_name=King; A=34.6104",
+        "store_state=OR; brand_name=Toretti; A=36.3,test1");
+  }
+
+  @Test void testZorDetails3() {
+    final String sqlQuery = "select sum(\"store_sales\") as a0"
+        + ", sum(\"store_cost\") as a1, count(1) as cnt"
+        + "  from \"foodmart\"\n";
+    CalciteAssert.AssertQuery q = sql(sqlQuery, FOODMART);
+    q.returnsOrdered("store_state=CA; brand_name=King; A=21.4632",
+        "store_state=OR; brand_name=Symphony; A=32.176",
+        "store_state=CA; brand_name=Toretti; A=32.2465",
+        "store_state=WA; brand_name=King; A=34.6104",
+        "store_state=OR; brand_name=Toretti; A=36.3,test1");
+  }
+
   @Test void testInterleaveBetweenAggregateAndGroupOrderByOnDimension() {
     final String sqlQuery = "select \"store_state\", \"brand_name\", \"A\" "
         + "from\n"
