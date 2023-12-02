@@ -2353,7 +2353,7 @@ public class DruidAdapterIT {
         "store_state=OR; brand_name=Symphony; A=32.176",
         "store_state=CA; brand_name=Toretti; A=32.2465",
         "store_state=WA; brand_name=King; A=34.6104",
-        "store_state=OR; brand_name=Toretti; A=36.3");
+        "store_state=OR; brand_name=Toretti; A=36.3,test1");
   }
 
   @Test void testInterleaveBetweenAggregateAndGroupOrderByOnDimension() {
