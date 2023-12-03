@@ -33,7 +33,6 @@ import com.google.common.collect.Multimap;
 
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.net.URL;
@@ -2316,7 +2315,6 @@ public class DruidAdapterIT {
     // e.g., throws_("/ by zero");
   }
 
-  @Disabled
   @Test void testInterleaveBetweenAggregateAndGroupOrderByOnMetrics() {
     final String sqlQuery = "select \"store_state\", \"brand_name\", \"A\" "
         + "from (\n"
@@ -2342,7 +2340,6 @@ public class DruidAdapterIT {
         "store_state=OR; brand_name=Toretti; A=36.3");
   }
 
-  @Disabled
   @Test void testZorDetails() {
     final String sqlQuery = "select \"store_state\", \"brand_name\", \"A\" "
         + "from (\n"
@@ -2359,7 +2356,6 @@ public class DruidAdapterIT {
         "store_state=OR; brand_name=Toretti; A=36.3,test9");
   }
 
-  @Disabled
   @Test void testZorDetails2() {
     final String sqlQuery = "select sum(\"store_sales\") as a0"
         + ", sum(\"store_cost\") as a1, \"store_state\""
@@ -2374,7 +2370,6 @@ public class DruidAdapterIT {
         "store_state=OR; brand_name=Toretti; A=36.3,test1");
   }
 
-  @Disabled
   @Test void testZorDetails3() {
     final String sqlQuery = "select sum(\"store_sales\") as a0"
         + ", sum(\"store_cost\") as a1, count(1) as cnt"
