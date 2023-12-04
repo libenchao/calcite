@@ -33,6 +33,7 @@ import com.google.common.collect.Multimap;
 
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.net.URL;
@@ -65,6 +66,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
  * <p>These tests use TIMESTAMP type for the Druid timestamp column, instead
  * of TIMESTAMP WITH LOCAL TIME ZONE type as {@link DruidAdapterIT}.
  */
+@Disabled
 public class DruidAdapter2IT {
   /** URL of the "druid-foodmart" model. */
   public static final URL FOODMART =

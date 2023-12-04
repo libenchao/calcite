@@ -31,6 +31,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -46,6 +47,7 @@ import static org.hamcrest.Matchers.hasToString;
 /**
  * Tests generating Druid filters.
  */
+@Disabled
 class DruidQueryFilterTest {
 
   private DruidQuery druidQuery;

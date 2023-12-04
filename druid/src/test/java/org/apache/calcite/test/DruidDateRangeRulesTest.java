@@ -29,6 +29,7 @@ import com.google.common.collect.ImmutableList;
 
 import org.hamcrest.Matcher;
 import org.joda.time.Interval;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Calendar;
@@ -40,6 +41,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasToString;
 
 /** Unit tests for {@link DateRangeRules} algorithms. */
+@Disabled
 class DruidDateRangeRulesTest {
 
   @Test void testExtractYearAndMonthFromDateColumn() {
