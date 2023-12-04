@@ -67,7 +67,6 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
  * Druid timestamp column, instead of TIMESTAMP type as
  * {@link DruidAdapter2IT}.
  */
-@Disabled
 public class DruidAdapterIT {
   /** URL of the "druid-foodmart" model. */
   public static final URL FOODMART =
